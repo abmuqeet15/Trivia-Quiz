@@ -18,4 +18,61 @@ quiz = [
     {"question": "Which ocean is the largest?", "options": ["Atlantic", "Indian", "Pacific", "Arctic"], "answer": "Pacific"}
 ]
 
-# Initiali
+# Initialize session state
+if "score" not in st.session_state:
+    st.session_state.score = 0
+if "question_index" not in st.session_state:
+    st.session_state.question_index = 0
+if "questions_order" not in st.session_state:
+    st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
+if "high_score" not in st.session_state:
+    st.session_state.high_score = 0
+if "rounds_played" not in st.session_state:
+    st.session_state.rounds_played = 0
+if "selected_option" not in st.session_state:
+    st.session_state.selected_option = None  # default value
+
+# Function to handle answer submission
+def submit_answer():
+    q_index = st.session_state.questions_order[st.session_state.question_index]
+    selected_option = st.session_state.selected_option
+    if selected_option == quiz[q_index]["answer"]:
+        st.session_state.score += 1
+    st.session_state.question_index += 1
+    st.session_state.selected_option = None  # reset for next question
+
+# Display current round and score
+st.write(f"**Round:** {st.session_state.rounds_played + 1}")
+st.write(f"**Current Score:** {st.session_state.score}")
+
+# Quiz logic
+if st.session_state.question_index < len(quiz):
+    q_index = st.session_state.questions_order[st.session_state.question_index]
+    q = quiz[q_index]
+    st.subheader(q["question"])
+    st.radio("Choose your answer:", q["options"], key="selected_option")
+    st.button("Submit Answer", on_click=submit_answer)
+else:
+    st.success(f"🎉 Round Completed! Your score: {st.session_state.score} / {len(quiz)}")
+    
+    if st.session_state.score > st.session_state.high_score:
+        st.session_state.high_score = st.session_state.score
+        st.balloons()
+        st.write("🏆 New High Score!")
+
+    st.write(f"**High Score:** {st.session_state.high_score}")
+    st.session_state.rounds_played += 1
+
+    if st.button("Next Round"):
+        st.session_state.score = 0
+        st.session_state.question_index = 0
+        st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
+        st.experimental_rerun()
+    
+    if st.button("Restart Game"):
+        st.session_state.score = 0
+        st.session_state.question_index = 0
+        st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
+        st.session_state.high_score = 0
+        st.session_state.rounds_played = 0
+        st.experimental_rerun()
