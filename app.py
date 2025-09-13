@@ -1,12 +1,10 @@
 import streamlit as st
 import random
 
-# Set page title
 st.set_page_config(page_title="Trivia Quiz Game", page_icon="🎮")
+st.title("🎉 Advanced Trivia Quiz Game by ABM")
 
-st.title("🎉 Advanced Trivia Quiz Game")
-
-# Define questions, options, and answers
+# Questions
 quiz = [
     {"question": "What is the capital of France?", "options": ["Paris", "London", "Rome", "Berlin"], "answer": "Paris"},
     {"question": "Who wrote 'Romeo and Juliet'?", "options": ["William Shakespeare", "Charles Dickens", "Mark Twain", "Jane Austen"], "answer": "William Shakespeare"},
@@ -20,61 +18,4 @@ quiz = [
     {"question": "Which ocean is the largest?", "options": ["Atlantic", "Indian", "Pacific", "Arctic"], "answer": "Pacific"}
 ]
 
-# Initialize session state
-if "score" not in st.session_state:
-    st.session_state.score = 0
-if "question_index" not in st.session_state:
-    st.session_state.question_index = 0
-if "questions_order" not in st.session_state:
-    st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
-if "high_score" not in st.session_state:
-    st.session_state.high_score = 0
-if "rounds_played" not in st.session_state:
-    st.session_state.rounds_played = 0
-
-# Function to handle answer submission
-def check_answer(selected_option):
-    q_index = st.session_state.questions_order[st.session_state.question_index]
-    correct_answer = quiz[q_index]["answer"]
-    if selected_option == correct_answer:
-        st.session_state.score += 1
-    st.session_state.question_index += 1
-
-# Display current round and score
-st.write(f"**Round:** {st.session_state.rounds_played + 1}")
-st.write(f"**Current Score:** {st.session_state.score}")
-
-# Quiz logic
-if st.session_state.question_index < len(quiz):
-    q_index = st.session_state.questions_order[st.session_state.question_index]
-    q = quiz[q_index]
-    st.subheader(q["question"])
-    selected_option = st.radio("Choose your answer:", q["options"])
-    if st.button("Submit Answer"):
-        check_answer(selected_option)
-        st.experimental_rerun()
-else:
-    st.success(f"🎉 Round Completed! Your score: {st.session_state.score} / {len(quiz)}")
-    
-    # Update high score
-    if st.session_state.score > st.session_state.high_score:
-        st.session_state.high_score = st.session_state.score
-        st.balloons()
-        st.write("🏆 New High Score!")
-
-    st.write(f"**High Score:** {st.session_state.high_score}")
-    st.session_state.rounds_played += 1
-
-    if st.button("Next Round"):
-        st.session_state.score = 0
-        st.session_state.question_index = 0
-        st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
-        st.experimental_rerun()
-    
-    if st.button("Restart Game"):
-        st.session_state.score = 0
-        st.session_state.question_index = 0
-        st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
-        st.session_state.high_score = 0
-        st.session_state.rounds_played = 0
-        st.experimental_rerun()
+# Initiali
