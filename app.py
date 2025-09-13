@@ -30,7 +30,7 @@ if "high_score" not in st.session_state:
 if "rounds_played" not in st.session_state:
     st.session_state.rounds_played = 0
 if "selected_option" not in st.session_state:
-    st.session_state.selected_option = None  # default value
+    st.session_state.selected_option = None
 
 # Function to handle answer submission
 def submit_answer():
@@ -39,7 +39,23 @@ def submit_answer():
     if selected_option == quiz[q_index]["answer"]:
         st.session_state.score += 1
     st.session_state.question_index += 1
-    st.session_state.selected_option = None  # reset for next question
+    st.session_state.selected_option = None
+
+# Function to start next round
+def next_round():
+    st.session_state.score = 0
+    st.session_state.question_index = 0
+    st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
+    st.session_state.selected_option = None
+
+# Function to restart game
+def restart_game():
+    st.session_state.score = 0
+    st.session_state.question_index = 0
+    st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
+    st.session_state.selected_option = None
+    st.session_state.high_score = 0
+    st.session_state.rounds_played = 0
 
 # Display current round and score
 st.write(f"**Round:** {st.session_state.rounds_played + 1}")
@@ -63,16 +79,5 @@ else:
     st.write(f"**High Score:** {st.session_state.high_score}")
     st.session_state.rounds_played += 1
 
-    if st.button("Next Round"):
-        st.session_state.score = 0
-        st.session_state.question_index = 0
-        st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
-        st.experimental_rerun()
-    
-    if st.button("Restart Game"):
-        st.session_state.score = 0
-        st.session_state.question_index = 0
-        st.session_state.questions_order = random.sample(range(len(quiz)), len(quiz))
-        st.session_state.high_score = 0
-        st.session_state.rounds_played = 0
-        st.experimental_rerun()
+    st.button("Next Round", on_click=next_round)
+    st.button("Restart Game", on_click=restart_game)
